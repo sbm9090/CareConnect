@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<title>Account registration form</title>
+<link
+	href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600'
+	rel='stylesheet' type='text/css'>
+<link
+	href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+	rel="stylesheet">
+
+</head>
+<body>
+
+	<section>
+
+		<style>
+form, input, select, p {
+	padding: 0;
+	margin: 0;
+	outline: none;
+	font-family: Roboto, Arial, sans-serif;
+	font-size: 14px;
+	color: #666;
+}
+
+h1 {
+	margin: 0;
+	font-weight: 400;
+}
+
+.form-h3 {
+	margin: 12px 0;
+	color: #8ebf42;
+	font-weight: bold;
+}
+
+.form-main-block {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #fff;
+}
+
+form {
+	width: 100%;
+	padding: 20px;
+}
+
+.form-fieldset {
+	border: none;
+	border-top: 1px solid #8ebf42;
+}
+
+.account-details, .personal-details {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.account-details>div, .personal-details>div>div {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.account-details>div, .personal-details>div, input, label {
+	width: 100%;
+}
+
+label {
+	padding: 0 5px;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+.label-right {
+	padding: 0 5px;
+	text-align: right;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+input {
+	padding: 5px;
+	vertical-align: middle;
+}
+
+ul {
+	list-style-type: none;
+}
+
+li div {
+	display: table-cell;
+	vertical-align: top;
+}
+
+select, .children, .gender, .bdate-block {
+	width: calc(100% + 26px);
+	padding: 5px 0;
+}
+
+select {
+	background: transparent;
+}
+
+.gender input {
+	width: auto;
+}
+
+.gender label {
+	padding: 0 5px 0 0;
+}
+
+.bdate-block {
+	display: flex;
+	justify-content: space-between;
+}
+
+.birthdate select.day {
+	width: 35px;
+}
+
+.birthdate select.mounth {
+	width: calc(100% - 94px);
+}
+
+.birthdate input {
+	width: 38px;
+	vertical-align: unset;
+}
+
+.checkbox input, .children input {
+	width: auto;
+	margin: -2px 10px 0 0;
+}
+
+.checkbox a {
+	color: #8ebf42;
+}
+
+.checkbox a:hover {
+	color: #82b534;
+}
+
+.reg-btn {
+	width: 100%;
+	padding: 10px 0;
+	margin: 10px auto;
+	border-radius: 5px;
+	border: none;
+	background: #8ebf42;
+	font-size: 14px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	min-width: 150px;
+	background-color: #f9f9f9;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	padding: 12px 16px;
+	z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.error-div .err {
+	margin-left: 16rem;
+}
+
+.reg-btn:hover {
+	background: #82b534;
+}
+
+@media ( min-width : 568px) {
+	.account-details>div, .personal-details>div {
+		width: 50%;
+	}
+	input {
+		width: 60%;
+	}
+	select, .children, .gender, .bdate-block {
+		width: calc(60% + 16px);
+	}
+	.form-main-block {
+		padding: 10px;
+	}
+	form {
+		padding: 10px;
+	}
+	.form-fieldset {
+		border-top: none;
+	}
+	.account-details>div, .personal-details>div>div, .label {
+		width: 100%;
+	}
+	.bdate-block {
+		flex-wrap: wrap;
+	}
+	.birthdate select.mounth {
+		width: 100%;
+		margin-bottom: 10px;
+	}
+	.reg-btn {
+		width: 100%;
+		margin: 10px 0;
+	}
+	.error-div .err {
+		margin-left: 0;
+	}
+}
+
+
+</style>
+
+		<div class="container py1">
+
+			<div th:if="${session.message}"
+				th:classappend="${session.message.type}" class="alert" role="alert">
+				<p th:text="${session.message.content}"></p>
+			</div>
+			<th:block th:text="${@sessionHelper.removeMessageFromSession()}"></th:block>
+
+			<div class="form-main-block">
+				<form th:action="@{/patient_register}" id="patientForm"
+					method="post" th:object="${patient}">
+					<h1 style="color: #8ebf42; font-weight: bold;">Patient
+						Registration Form</h1>
+
+					<fieldset class="form-fieldset">
+						<legend>
+							<h3 class="form-h3">Personal Details</h3>
+						</legend>
+						<div class="personal-details">
+							<div class="error-div">
+								<div>
+									<label>First Name*</label><input type="text"
+										class="form-control" name="fname" th:value="${patient.fname}"
+										th:classappend="${#fields.hasErrors('fname') ? 'is-invalid': '' }">
+
+								</div>
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('fname')}" th:text="${e}"></div>
+								<div>
+									<label>Last Name*</label><input type="text" name="lname"
+										class="form-control"
+										th:classappend="${#fields.hasErrors('lname') ? 'is-invalid': '' }"
+										th:value="${patient.lname}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('lname')}" th:text="${e}"></div>
+
+								<div>
+									<label>Street*</label><input type="text" class="form-control"
+										name="streetAddress" th:value="${patient.streetAddress}"
+										th:classappend="${#fields.hasErrors('streetAddress') ? 'is-invalid': '' }">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('streetAddress')}" th:text="${e}"></div>
+
+								<div>
+									<label>Landmark</label><input type="text" class="form-control"
+										name="landmark"
+										th:classappend="${#fields.hasErrors('landmark') ? 'is-invalid': '' }"
+										th:value="${patient.landmark}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('landmark')}" th:text="${e}"></div>
+
+								<div>
+									<label>City*</label><input type="text" name="city"
+										class="form-control"
+										th:classappend="${#fields.hasErrors('city') ? 'is-invalid': '' }"
+										th:value="${patient.city}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('city')}" th:text="${e}"></div>
+
+								<div>
+									<label>State*</label> <select name="state" class="form-control"
+										th:classappend="${#fields.hasErrors('state') ? 'is-invalid': '' }"
+										th:value="${patient.state}">
+										<option selected value="">Please Select</option>
+										<option value="Maharashtra">Maharashtra</option>
+										<option value="Gujrath">Gujrath</option>
+										<option value="Madhya Prasesh">Madhya Prasesh</option>
+										<option value="Goa">Goa</option>
+									</select>
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('state')}" th:text="${e}"></div>
+
+								<div>
+									<label>Postal / Pin Code</label><input type="text"
+										class="form-control" name="pin"
+										th:classappend="${#fields.hasErrors('pin') ? 'is-invalid': '' }"
+										th:value="${patient.pin}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('pin')}" th:text="${e}"></div>
+
+
+								<div>
+									<label>Marital Status*</label> <select name="maritalStatus"
+										class="form-control"
+										th:classappend="${#fields.hasErrors('maritalStatus') ? 'is-invalid': '' }"
+										th:value="${patient.maritalStatus}">
+										<option selected value="">Please Select</option>
+										<option value="Married">Married</option>
+										<option value="Single">Single</option>
+										<option value="Widowed">Widowed</option>
+										<option value="Divorced">Divorced</option>
+									</select>
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('maritalStatus')}" th:text="${e}"></div>
+
+								<div>
+
+									<label>Gender*</label>
+									<div class="gender">
+										<label for="male" class="radio">Male</label><input
+											type="radio" value="Male" id="male" name="gender" /> <label
+											for="female" class="radio">Female</label><input type="radio"
+											value="Female" id="female" name="gender" />
+
+									</div>
+								</div>
+
+
+								<div class="birthdate">
+									<label>Birth Date*</label> <input type="Date" name="dob"
+										style="width: 15rem;" class="form-control"
+										th:classappend="${#fields.hasErrors('dob') ? 'is-invalid': '' }"
+										th:value="${patient.dob}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('dob')}" th:text="${e}"></div>
+
+							
+						</div>
+					</fieldset>
+
+					<fieldset class="form-fieldset">
+						<legend>
+							<h3 class="form-h3">Account Details</h3>
+						</legend>
+						<div class="personal-details">
+							<div class="error-div">
+								<div>
+									<label>Email*</label><input type="email" class="form-control"
+										name="email"
+										th:classappend="${#fields.hasErrors('email') ? 'is-invalid': '' }"
+										th:value="${patient.email}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('email')}" th:text="${e}"></div>
+
+								<div>
+									<label>Phone*</label><input type="text" class="form-control"
+										name="phone"
+										th:classappend="${#fields.hasErrors('phone') ? 'is-invalid': '' }"
+										th:value="${patient.phone}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('phone')}" th:text="${e}"></div>
+
+								<div>
+									<label>Password*</label><input type="password"
+										class="form-control" name="password" id="password"
+										th:classappend="${#fields.hasErrors('password') ? 'is-invalid': '' }"
+										th:value="${patient.password}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('password')}" th:text="${e}"></div>
+
+								<div>
+									<label>Repeat password*</label><input type="password" name=""
+										id="verifyPassword" class="form-control">
+								</div>
+
+								<div class="invalid-feedback err" id="errorDiv"></div>
+
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset class="form-fieldset">
+						<legend>
+							<h3 class="form-h3">Emergency Contact Details</h3>
+						</legend>
+						<div class="personal-details">
+							<div class="error-div">
+								<div>
+									<label>Full Name*</label><input type="text"
+										class="form-control" name="emergencyName"
+										th:classappend="${#fields.hasErrors('emergencyName') ? 'is-invalid': '' }"
+										th:value="${patient.emergencyName}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('emergencyName')}" th:text="${e}"></div>
+
+								<div>
+									<label>Phone*</label><input type="text" class="form-control"
+										name="emergencyContact"
+										th:classappend="${#fields.hasErrors('emergencyContact') ? 'is-invalid': '' }"
+										th:value="${patient.emergencyContact}">
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('emergencyContact')}"
+									th:text="${e}"></div>
+
+								<div>
+									<label>Relation*</label> <select class="form-control"
+										name="emergencyRelation"
+										th:classappend="${#fields.hasErrors('emergencyRelation') ? 'is-invalid': '' }"
+										th:value="${patient.emergencyRelation}">
+										<option selected value="">Please Select</option>
+										<option value="Father">Father</option>
+										<option value="Son">Son</option>
+										<option value="Brother">Brother</option>
+										<option value="Mother">Mother</option>
+										<option value="Sister">Sister</option>
+										<option value="Daughter">Daughter</option>
+										<option value="Husband">Husband</option>
+									
+									</select>
+								</div>
+
+								<div class="invalid-feedback err"
+									th:each="e : ${#fields.errors('emergencyRelation')}"
+									th:text="${e}"></div>
+
+							</div>
+						</div>
+					</fieldset>
+
+
+					<fieldset class="form-fieldset">
+						<legend>
+							<h3 class="form-h3">Medical History</h3>
+						</legend>
+
+						<div class="personal-details">
+
+							<div class="error-div">
+
+								<div>
+									<label>Do you use tobacco?*</label> <select name="tobaccoUse"
+										class="form-control"
+										th:classappend="${#fields.hasErrors('tobaccoUse') ? 'is-invalid': '' }"
+										th:value="${patient.tobaccoUse}">
+										<option selected value="">Please Select</option>
+										<option value="No">No</option>
+										<option value="Daily">Daily</option>
+										<option value="Weekly">Weekly</option>
+									</select>
+
+									<div class="invalid-feedback err"
+										th:each="e : ${#fields.errors('tobaccoUse')}" th:text="${e}"></div>
+
+								</div>
+
+
+								<div>
+									<label>Do you use Alcohol?*</label> <select name="alcoholUse"
+										class="form-control"
+										th:classappend="${#fields.hasErrors('alcoholUse') ? 'is-invalid': '' }"
+										th:value="${patient.alcoholUse}">
+										<option selected value="">Please Select</option>
+										<option value="No">No</option>
+										<option value="Daily">Daily</option>
+										<option value="Weekly">Weekly</option>
+									</select>
+									<div class="invalid-feedback err"
+										th:each="e : ${#fields.errors('alcoholUse')}" th:text="${e}"></div>
+								</div>
+								
+								<div>
+
+									<label >Medical History*</label>
+									
+										<select multiple multiselect-search="true" 
+											 name="medicalHistory"
+											id="multiselect_dropdown_styles"
+											th:classappend="${#fields.hasErrors('medicalHistory') ? 'is-invalid': '' }"
+											th:value="${patient.medicalHistory}">
+											<option value="None">None</option>
+											<option value="Arthritis">Arthritis</option>
+											<option value="Asthma">Asthma</option>
+											<option value="Blood Disorder">Blood Disorder</option>
+											<option value="Dementia">Dementia</option>
+											<option value="Depression">Depression</option>
+											<option value="Diabetes">Diabetes</option>
+											<option value="High BP">High BP</option>
+											<option value="Mental illness">Mental illness</option>
+											<option value="Heart disease">Heart disease</option>
+											<option value="Liver Disease">Liver Disease</option>
+											<option value="High cholesterol">High cholesterol</option>
+											
+										</select>
+				
+									</div>
+									<div class="invalid-feedback err"
+										th:each="e : ${#fields.errors('medicalHistory')}"
+										th:text="${e}"></div>
+
+								<div>
+									<label>Family Medical History*</label> <select
+										name="familyHistory" id="combinedFieldFMH"
+										th:classappend="${#fields.hasErrors('familyHistory') ? 'is-invalid': '' }"
+										th:value="${patient.familyHistory}" multiple multiselect-search="true" >
+										<option value="None">None</option>
+											<option value="Arthritis">Arthritis</option>
+											<option value="Asthma">Asthma</option>
+											<option value="Blood Disorder">Blood Disorder</option>
+											<option value="Dementia">Dementia</option>
+											<option value="Depression">Depression</option>
+											<option value="Diabetes">Diabetes</option>
+											<option value="High BP">High BP</option>
+											<option value="Mental illness">Mental illness</option>
+											<option value="Heart disease">Heart disease</option>
+											<option value="Liver Disease">Liver Disease</option>
+											<option value="High cholesterol">High cholesterol</option>
+										</select>
+
+									<div class="invalid-feedback err"
+										th:each="e : ${#fields.errors('familyHistory')}"
+										th:text="${e}"></div>
+								</div>
+
+							</div>
+
+
+						</div>
+						</fieldset>
+			
+			
+
+
+
+			<fieldset class="form-fieldset">
+				<legend>
+					<h3 class="form-h3">Terms and Conditions</h3>
+				</legend>
+				<div class="terms-mailing">
+					<div class="checkbox">
+						<input type="checkbox" name="agreement"><span>I
+							accept the Privacy Policy for CareConnect.</span>
+					</div>
+				</div>
+			</fieldset>
+			<button class="reg-btn" type="submit" href="/">Submit</button>
+			</form>
+		</div>
+		</div>
+		
+		<script>
+		var style = document.createElement('style');
+		style.setAttribute("id","multiselect_dropdown_styles");
+		style.innerHTML = `
+		.multiselect-dropdown{
+		  display: inline-block;
+		  padding: 2px 5px 0px 5px;
+		  border-radius: 4px;
+		  border: solid 1px #ced4da;
+		  background-color: white;
+		  position: relative;
+		  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+		  background-repeat: no-repeat;
+		  background-position: right .75rem center;
+		  background-size: 16px 12px;
+		}
+		.multiselect-dropdown span.optext, .multiselect-dropdown span.placeholder{
+		  margin-right:0.5em; 
+		  margin-bottom:2px;
+		  padding:1px 0; 
+		  border-radius: 4px; 
+		  display:inline-block;
+		}
+		.multiselect-dropdown span.optext{
+		  background-color:lightgray;
+		  padding:1px 0.75em; 
+		}
+		.multiselect-dropdown span.optext .optdel {
+		  float: right;
+		  margin: 0 -6px 1px 5px;
+		  font-size: 0.7em;
+		  margin-top: 2px;
+		  cursor: pointer;
+		  color: #666;
+		}
+		.multiselect-dropdown span.optext .optdel:hover { color: #c66;}
+		.multiselect-dropdown span.placeholder{
+		  color:#ced4da;
+		}
+		.multiselect-dropdown-list-wrapper{
+		  box-shadow: gray 0 3px 8px;
+		  z-index: 100;
+		  padding:2px;
+		  border-radius: 4px;
+		  border: solid 1px #ced4da;
+		  display: none;
+		  margin: -1px;
+		  position: absolute;
+		  top:0;
+		  left: 0;
+		  right: 0;
+		  background: white;
+		}
+		.multiselect-dropdown-list-wrapper .multiselect-dropdown-search{
+		  margin-bottom:5px;
+		}
+		.multiselect-dropdown-list{
+		  padding:2px;
+		  height: 15rem;
+		  overflow-y:auto;
+		  overflow-x: hidden;
+		}
+		.multiselect-dropdown-list::-webkit-scrollbar {
+		  width: 6px;
+		}
+		.multiselect-dropdown-list::-webkit-scrollbar-thumb {
+		  background-color: #bec4ca;
+		  border-radius:3px;
+		}
+
+		.multiselect-dropdown-list div{
+		  padding: 5px;
+		}
+		.multiselect-dropdown-list input{
+		  height: 1.15em;
+		  width: 1.15em;
+		  margin-right: 0.35em;  
+		}
+		.multiselect-dropdown-list div.checked{
+		}
+		.multiselect-dropdown-list div:hover{
+		  background-color: #ced4da;
+		}
+		.multiselect-dropdown span.maxselected {width:100%;}
+		.multiselect-dropdown-all-selector {border-bottom:solid 1px #999;}
+		`;
+		document.head.appendChild(style);
+
+		function MultiselectDropdown(options){
+		  var config={
+		    search:true,
+		    height:'15rem',
+		    placeholder:'select',
+		    txtSelected:'selected',
+		    txtAll:'All',
+		    txtRemove: 'Remove',
+		    txtSearch:'search',
+		    ...options
+		  };
+		  function newEl(tag,attrs){
+		    var e=document.createElement(tag);
+		    if(attrs!==undefined) Object.keys(attrs).forEach(k=>{
+		      if(k==='class') { Array.isArray(attrs[k]) ? attrs[k].forEach(o=>o!==''?e.classList.add(o):0) : (attrs[k]!==''?e.classList.add(attrs[k]):0)}
+		      else if(k==='style'){  
+		        Object.keys(attrs[k]).forEach(ks=>{
+		          e.style[ks]=attrs[k][ks];
+		        });
+		       }
+		      else if(k==='text'){attrs[k]===''?e.innerHTML='&nbsp;':e.innerText=attrs[k]}
+		      else e[k]=attrs[k];
+		    });
+		    return e;
+		  }
+
+		  
+		  document.querySelectorAll("select[multiple]").forEach((el,k)=>{
+		    
+		    var div=newEl('div',{class:'multiselect-dropdown',style:{width:config.style?.width??el.clientWidth+'px',padding:config.style?.padding??''}});
+		    el.style.display='none';
+		    el.parentNode.insertBefore(div,el.nextSibling);
+		    var listWrap=newEl('div',{class:'multiselect-dropdown-list-wrapper'});
+		    var list=newEl('div',{class:'multiselect-dropdown-list',style:{height:config.height}});
+		    var search=newEl('input',{class:['multiselect-dropdown-search'].concat([config.searchInput?.class??'form-control']),style:{width:'100%',display:el.attributes['multiselect-search']?.value==='true'?'block':'none'},placeholder:config.txtSearch});
+		    listWrap.appendChild(search);
+		    div.appendChild(listWrap);
+		    listWrap.appendChild(list);
+
+		    el.loadOptions=()=>{
+		      list.innerHTML='';
+		      
+		      if(el.attributes['multiselect-select-all']?.value=='true'){
+		        var op=newEl('div',{class:'multiselect-dropdown-all-selector'})
+		        var ic=newEl('input',{type:'checkbox'});
+		        op.appendChild(ic);
+		        op.appendChild(newEl('label',{text:config.txtAll}));
+		  
+		        op.addEventListener('click',()=>{
+		          op.classList.toggle('checked');
+		          op.querySelector("input").checked=!op.querySelector("input").checked;
+		          
+		          var ch=op.querySelector("input").checked;
+		          list.querySelectorAll(":scope > div:not(.multiselect-dropdown-all-selector)")
+		            .forEach(i=>{if(i.style.display!=='none'){i.querySelector("input").checked=ch; i.optEl.selected=ch}});
+		  
+		          el.dispatchEvent(new Event('change'));
+		        });
+		        ic.addEventListener('click',(ev)=>{
+		          ic.checked=!ic.checked;
+		        });
+		  
+		        list.appendChild(op);
+		      }
+
+		      Array.from(el.options).map(o=>{
+		        var op=newEl('div',{class:o.selected?'checked':'',optEl:o})
+		        var ic=newEl('input',{type:'checkbox',checked:o.selected});
+		        op.appendChild(ic);
+		        op.appendChild(newEl('label',{text:o.text}));
+
+		        op.addEventListener('click',()=>{
+		          op.classList.toggle('checked');
+		          op.querySelector("input").checked=!op.querySelector("input").checked;
+		          op.optEl.selected=!!!op.optEl.selected;
+		          el.dispatchEvent(new Event('change'));
+		        });
+		        ic.addEventListener('click',(ev)=>{
+		          ic.checked=!ic.checked;
+		        });
+		        o.listitemEl=op;
+		        list.appendChild(op);
+		      });
+		      div.listEl=listWrap;
+
+		      div.refresh=()=>{
+		        div.querySelectorAll('span.optext, span.placeholder').forEach(t=>div.removeChild(t));
+		        var sels=Array.from(el.selectedOptions);
+		        if(sels.length>(el.attributes['multiselect-max-items']?.value??5)){
+		          div.appendChild(newEl('span',{class:['optext','maxselected'],text:sels.length+' '+config.txtSelected}));          
+		        }
+		        else{
+		          sels.map(x=>{
+		            var c=newEl('span',{class:'optext',text:x.text, srcOption: x});
+		            if((el.attributes['multiselect-hide-x']?.value !== 'true'))
+		              c.appendChild(newEl('span',{class:'optdel',text:'🗙',title:config.txtRemove, onclick:(ev)=>{c.srcOption.listitemEl.dispatchEvent(new Event('click'));div.refresh();ev.stopPropagation();}}));
+
+		            div.appendChild(c);
+		          });
+		        }
+		        if(0==el.selectedOptions.length) div.appendChild(newEl('span',{class:'placeholder',text:el.attributes['placeholder']?.value??config.placeholder}));
+		      };
+		      div.refresh();
+		    }
+		    el.loadOptions();
+		    
+		    search.addEventListener('input',()=>{
+		      list.querySelectorAll(":scope div:not(.multiselect-dropdown-all-selector)").forEach(d=>{
+		        var txt=d.querySelector("label").innerText.toUpperCase();
+		        d.style.display=txt.includes(search.value.toUpperCase())?'block':'none';
+		      });
+		    });
+
+		    div.addEventListener('click',()=>{
+		      div.listEl.style.display='block';
+		      search.focus();
+		      search.select();
+		    });
+		    
+		    document.addEventListener('click', function(event) {
+		      if (!div.contains(event.target)) {
+		        listWrap.style.display='none';
+		        div.refresh();
+		      }
+		    });    
+		  });
+		}
+
+		window.addEventListener('load',()=>{
+		  MultiselectDropdown(window.MultiselectDropdownOptions);
+		});
+
+		
+		
+		
+		
+			document.getElementById('patientForm').addEventListener(
+					'submit',
+					function(event) {
+						// Retrieve the entered password and verified password
+						var enteredPassword = document
+								.getElementById('password').value;
+						var verifiedPassword = document
+								.getElementById('verifyPassword').value;
+						var errorDiv = document.getElementById('errorDiv');
+
+						// Compare the passwords
+						if (enteredPassword !== verifiedPassword) {
+							// Passwords don't match
+							errorDiv.textContent = 'Password does not match';
+							event.preventDefault(); // Prevent form submission
+						}
+					});
+
+			
+		</script>
+
+	</section>
+</body>
+</html>
+

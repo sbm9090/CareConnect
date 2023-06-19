@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8" />
+<title>Appointments</title>
+</head>
+
+<body>
+
+	<section class="py1">
+		<div class="container-md ">
+			<div class="row mb-5">
+				<div class="col-md-12 text-center">
+					<span style="color: red; font-weight: bold;"> <marquee>
+							Please Login To book Appointment</marquee></span>
+				</div>
+			</div>
+
+			<div class="row">
+
+				<div class="col-md-4 "></div>
+				<div class="col-md-8 wrapper-body">
+
+					<div class="wrapper1">
+						<div class="search_box1">
+
+							<form th:action="@{/search}" method="get">
+								<div class="search_field1">
+									<input type="text" class="input" id="queryInput" name="query"
+										placeholder="Search">
+									<button type="submit" class="icon-button">
+										<i class="fas fa-search"></i>
+									</button>
+								</div>
+							</form>
+
+						</div>
+
+
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="row">
+			<div class="col-md-4">
+				<ul class="list-group mx-5 list-group-flush shadow-lg mt-4 bg-white rounded">
+					<li class="list-group-item list-group-item-light font-weight-bold"><a th:href="@{/signin}">Patient Login</a></li>
+					
+					<li class="list-group-item list-group-item-light font-weight-bold"><a th:href="@{/patient-registration}">Register As Patient</a></li>
+						
+					<li class="list-group-item list-group-item-light font-weight-bold"><a th:href="@{/doctor-registration}">Register As Doctor</a></li>
+			
+				</ul>
+				
+				
+
+
+			</div>
+			<div class="courses-container col-md-8">
+
+
+
+				<div class="course" th:each="doc: ${doctors}">
+					<div class="course-preview">
+						<h6 th:text="${doc.registrationType}"></h6>
+						<h2 th:text="${doc.fname}+' '+${doc.lname}"></h2>
+						<h6 th:text="${doc.specialiazation}"></h6>
+						<a href="#">Find Location <i class="fa-solid fa-location-dot"
+							style="color: #ffffff;"></i></a>
+					</div>
+					<div class="course-info">
+
+						<h6>Clinic Name</h6>
+						<h2 th:text="${doc.clinicName}"></h2>
+						<h6>Address</h6>
+						<h4
+							th:text="${doc.streetAddress}+', '+${doc.landmark}+', '+${doc.city}+', '+${doc.state}+', '+${doc.pin}"></h4>
+
+					</div>
+				</div>
+
+
+			</div>
+
+		</div>
+
+	
+
+
+
+		<script>
+			var today = new Date();
+			var minDate = today.toISOString().split('T')[0];
+			var maxDate = new Date(today.getFullYear(), today.getMonth(), today
+					.getDate() + 7).toISOString().split('T')[0];
+
+			document.getElementById('dateInput').min = minDate;
+			document.getElementById('dateInput').max = maxDate;
+
+			$(".default_option1").click(function() {
+				$(".dropdown1 ul").addClass("active");
+			});
+
+			$(".dropdown1 ul li").click(function() {
+				var text = $(this).text();
+				$(".default_option1").text(text);
+				$(".dropdown1 ul").removeClass("active");
+			});
+
+			//drop down end
+		</script>
+		<script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+
+
+	</section>
+
+
+</body>
+</html>
